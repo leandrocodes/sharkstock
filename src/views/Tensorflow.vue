@@ -1,16 +1,16 @@
 <template>
   <div class="tensorflow">
     <h1>Tensorflow</h1>
-    <photo-capture v-model="image"></photo-capture>
+    <camera v-model="image"></camera>
   </div>
 </template>
 
 <script>
 import * as tf from '@tensorflow/tfjs'
-import { PhotoCapture } from 'vue-media-recorder'
+import camera from '../components/Camera'
 export default {
   components: {
-    PhotoCapture
+    camera
   },
   data: () => ({
     model: null,
