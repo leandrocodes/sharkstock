@@ -75,22 +75,29 @@ export default {
     this.streamUserMediaVideo()
   },
   methods: {
-    streamUserMediaVideo() {
+    async streamUserMediaVideo() {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         return
       }
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(stream => (this.videoPlayer.srcObject = stream))
-        .catch(() => {
-          this.isValid = false
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            facingMode: 'user',
+            width: window.innerWidth
+          }
         })
+        this.videoPlayer.srcObject = stream
+      } catch (_error) {
+        this.invalid = false
+      }
     },
     capture() {
       this.showVideo = false
       this.canvasElement.width = this.videoPlayer.videoWidth
       this.canvasElement.height = this.videoPlayer.videoHeight
-      var context = this.canvasElement.getContext('2d')
+      const context = this.canvasElement.getContext('2d')
       context.translate(this.canvasElement.width, 0)
       context.scale(-1, 1)
       context.drawImage(this.$refs.player, 0, 0)
@@ -99,6 +106,7 @@ export default {
     },
     done() {
       this.$emit('input', this.picture)
+      this.$emit('predict')
       this.showVideo = true
       this.streamUserMediaVideo()
     },
